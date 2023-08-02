@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="octoprint_print_view_form" model="ir.ui.view">
+		<field name="name">octoprint.slicer.view.form</field>
+		<field name="model">octoprint.slicer</field>
+		<field name="arch" type="xml">
+			<form string="Slicer View">
+				<sheet>
+					<h1>
+						<field name="name" />
+					</h1>
+					<group>
+						<group>
+							<separator string="Print Information" />
+							<field name="mrp_id" />
+							<field name="state" />
+						</group>
+						<!-- <group>
+								<separator string="Printer Information" />
+								<field name="owner_id" />
+								<field name="owner_phone" widget='phone' />
+								<field name="owner_email" widget='email' />
+							</group> -->
+					</group>
+					<!-- <notebook>
+							<page string="Related Documents">
+								<label for="certificate_title" string="Certificate Title" />
+								<field name="certificate_title" />
+							</page>
+						</notebook> -->
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+
+	<record id="octoprint_print_view_list" model="ir.ui.view">
+		<field name="name">octoprint.slicer.view.list</field>
+		<field name="model">octoprint.slicer</field>
+		<field name="arch" type="xml">
+			<tree string="Print List">
+				<field name="name" />
+				<field name="mrp_id" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="octoprint_printer_view_form" model="ir.ui.view">
+		<field name="name">octoprint.printer.view.form</field>
+		<field name="model">octoprint.printer</field>
+		<field name="arch" type="xml">
+			<form string="Print View">
+				<sheet>
+					<h1>
+						<field name="name" />
+					</h1>
+					<group>
+						<group>
+							<separator string="Printer Information" />
+							<field name="name" />
+							<field name="printer_id" />
+							<field name="color" />
+							<field name="model" />
+							<field name="default" />
+							<field name="current" />
+							<field name="has_heated_bed" />
+							<field name="has_heated_chamber" />
+						</group>
+						<!-- <group>
+							<separator string="Printer Information" />
+							<field name="owner_id" />
+							<field name="owner_phone" widget='phone' />
+							<field name="owner_email" widget='email' />
+						</group> -->
+					</group>
+					<notebook>
+						<page string="Printer Volume Information">
+							<field name="volume_form_factor" />
+							<field name="volume_origin" />
+							<field name="volume_width" />
+							<field name="volume_height" />
+							<field name="volume_depth" />
+							<field name="volume_custom_box" />
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+
+	<record id="octoprint_printer_view_list" model="ir.ui.view">
+		<field name="name">octoprint.printer.view.list</field>
+		<field name="model">octoprint.printer</field>
+		<field name="arch" type="xml">
+			<tree string="Printer List">
+				<field name="name" />
+				<field name="printer_id" />
+				<field name="model" />
+			</tree>
+		</field>
+	</record>
+
+	<!-- <record id="motorcycle_registry_view_search" model="ir.ui.view">
+		<field name="name">motorcycle.registry.view.search</field>
+		<field name="model">motorcycle.registry</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="registry_number" />
+				<field name="vin" />
+				<field name="owner_id" />
+				<field name="license_plate" />
+			</search>
+		</field>
+	</record> -->
+
+
+</odoo>
