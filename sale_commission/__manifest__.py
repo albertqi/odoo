@@ -2,11 +2,10 @@
     'name': 'Sales Commissions',
     'summary': 'Adds sales commission tracking and management to the Odoo system.',
     'description': """Sales Commissions
-    ====================
-    The Sales Commissions module is a custom development that 
-    extends the functionality of the Odoo system by 
-    introducing a comprehensive sales commission tracking and 
-    management system.""",
+====================
+The Sales Commissions module is a custom development that
+extends the functionality of the Odoo system by introducing
+a comprehensive sales commission tracking and management system.""",
     'version': '1.0',
     'license': 'OPL-1',
     'author': 'Odoo Inc.',
@@ -35,6 +34,5 @@
             'sale_commission/static/src/css/report_sale_commission.css',
         ],
     },
-    'auto_install': True,
     'application': True,
 }
