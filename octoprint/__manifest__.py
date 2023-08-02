@@ -5,7 +5,7 @@
 ====================
 The OctoPrint Integration module is a custom development that
 extends the functionality of the Odoo system by
-integrating OctoPrint to the manufacturing application.""",
+integrating OctoPrint with the manufacturing application.""",
     'version': '1.0',
     'license': 'OPL-1',
     'author': 'Odoo Inc.',
