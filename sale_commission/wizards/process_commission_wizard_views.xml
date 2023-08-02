@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="process_commission_wizard_view_form" model="ir.ui.view">
+        <field name="name">process.commission.wizard.form</field>
+        <field name="model">process.commission.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Process Commission Wizard">
+                <group>
+                    <group />
+                    <field name="commission_ids" />
+                </group>
+                <footer>
+                    <button name="process_commission" type="object" string="Submit"
+                        class="btn-primary" />
+                    <button type="object" string="Close" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sale_commission_process_commission" model="ir.actions.server">
+        <field name="name">Process Settlements</field>
+        <field name="model_id" ref="model_sale_commission" />
+        <field name="binding_model_id" ref="model_sale_commission" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Process Settlements',
+            'res_model': 'process.commission.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_commission_ids': records.filtered(lambda r: r.state ==
+            'open').ids},
+            }
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="report_sale_commission">
+            <t t-call="web.html_container">
+                <t t-groupby="o.partner_id">
+                    <t t-set="last_partner_id" t-value="0" />
+                    <div class="p-4" t-foreach="docs" t-as="o">
+                        <t t-if="o.partner_id.id != last_partner_id">
+                            <t t-set="last_partner_id" t-value="o.partner_id.id" />
+                            <h2>
+                                <span t-esc="o.partner_id.name" />
+                            </h2>
+                            <table class="table table-sm o_main_table table-borderless">
+                                <thead>
+                                    <tr class="background-grey">
+                                        <th name="th_name" class="row-th">
+                                            <span>Commission</span>
+                                        </th>
+                                        <th t-if="o.account_move_id" name="th_account_move_id"
+                                            class="row-th">
+                                            <span>Invoice</span>
+                                        </th>
+                                        <th t-if="o.payment_id" name="th_payment_id" class="row-th">
+                                            <span>Payment</span>
+                                        </th>
+                                        <th t-if="o.vendor_bill_id" name="th_vendor_bill_id"
+                                            class="row-th">
+                                            <span>Vendor Bill</span>
+                                        </th>
+                                        <th name="th_state" class="row-th">
+                                            <span>Status</span>
+                                        </th>
+                                        <th name="th_payment_amount" class="row-th">
+                                            <span>Payment Amount</span>
+                                        </th>
+                                        <th name="th_commission_amount" class="row-th">
+                                            <span>Commission Amount</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        t-foreach="docs.filtered(lambda r: r.partner_id.id == o.partner_id.id)"
+                                        t-as="line" class="border">
+                                        <td name="td_name" class="row-th">
+                                            <span t-esc="line.name" />
+                                        </td>
+                                        <td t-if="line.account_move_id" name="td_account_move_id"
+                                            class="row-th">
+                                            <span t-field="line.account_move_id.name">Invoice</span>
+                                        </td>
+                                        <td t-if="line.payment_id" name="td_payment_id"
+                                            class="row-th">
+                                            <span t-field="line.payment_id.name">Payment</span>
+                                        </td>
+                                        <td t-if="line.vendor_bill_id" name="td_vendor_bill_id"
+                                            class="row-th">
+                                            <span t-field="line.vendor_bill_id.name">Vendor Bill</span>
+                                        </td>
+                                        <td name="td_state" class="row-th">
+                                            <span t-esc="line.state">Status</span>
+                                        </td>
+                                        <td name="td_payment_amount" class="row-th">
+                                            <span t-esc="'${:.2f}'.format(line.payment_amount)">Payment
+                                                Amount</span>
+                                        </td>
+                                        <td name="td_commission_amount" class="row-th">
+                                            <span t-esc="'${:.2f}'.format(line.commission_amount)">Commission
+                                                Amount</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

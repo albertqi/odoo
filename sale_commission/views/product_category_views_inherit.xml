@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record model="ir.ui.view" id="product_category_form_inherit_product_category">
+        <field name="name">product.category.form.inherit.product.category</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <group name="commission_information" string="Commission Information">
+                        <field name="commission_type" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record model="ir.ui.view" id="product_category_search_inherit_product_category">
+        <field name="name">product.category.search.inherit.product.category</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_search_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter string="Has Commission Type" name="filter_commission_type"
+                    domain="[('commission_type', '!=', False)]" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sale_commission_action_settlements" model="ir.actions.act_window">
+        <field name="name">Sales Commissions</field>
+        <field name="res_model">sale.commission</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a sales commission
+            </p>
+        </field>
+    </record>
+
+    <record id="sale_commission_action_commission_types" model="ir.actions.act_window">
+        <field name="name">Commission Types</field>
+        <field name="res_model">sale.commission.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a commission type
+            </p>
+        </field>
+    </record>
+
+    <record id="sale_commission_action_product_categories" model="ir.actions.act_window">
+        <field name="name">Product Categories</field>
+        <field name="res_model">product.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_commission_type': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a product category
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_sale_commission" name="Sales Commissions"
+        sequence="1" web_icon="sale_commission,static/description/icon.png">
+
+        <menuitem id="menu_sale_commission_sales_commissions" name="Sales Commissions" sequence="1">
+            <menuitem id="menu_sale_commission_settlements" name="Settlements" sequence="1"
+                action="sale_commission_action_settlements" />
+            <menuitem id="menu_sale_commission_commission_types" name="Commission Types"
+                sequence="2" action="sale_commission_action_commission_types" />
+        </menuitem>
+
+        <menuitem id="menu_sale_commission_product" name="Products" sequence="2">
+            <menuitem id="menu_sale_commission_product_categories" name="Product Categories"
+                sequence="1" action="sale_commission_action_product_categories" />
+        </menuitem>
+
+    </menuitem>
+
+</odoo>
