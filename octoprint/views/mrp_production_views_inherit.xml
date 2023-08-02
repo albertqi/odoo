@@ -6,10 +6,19 @@
             <field name="model">mrp.production</field>
             <field name="inherit_id" ref="mrp.mrp_production_form_view" />
             <field name="arch" type="xml">
-                <xpath expr="//header" position="inside">
-                    <field name="stl_file" />
-                    <button name="action_start_octoprint_job" string="Start Octoprint Job"
-                        type="object" class="oe_highlight" />
+                <xpath expr="//notebook" position="inside">
+                    <page string="Printing" name="printing">
+                        <group>
+                            <group>
+                                <field name="stl_file_name" invisible="1" />
+                                <field name="stl_file" filename="stl_file_name" />
+                            </group>
+                            <group>
+                                <field name="slicer_id" />
+                                <field name="printer_id" />
+                            </group>
+                        </group>
+                    </page>
                 </xpath>
             </field>
         </record>

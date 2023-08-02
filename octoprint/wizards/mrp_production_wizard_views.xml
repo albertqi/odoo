@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="mrp_production_wizard_view_form" model="ir.ui.view">
+        <field name="name">mrp.production.wizard.form</field>
+        <field name="model">mrp.production.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Manufacturing Wizard">
+                <group>
+                    <group />
+                    <field name="mrp_ids" />
+                </group>
+                <footer>
+                    <button name="create_prints" type="object" string="Submit"
+                        class="btn-primary" />
+                    <button type="object" string="Close" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mrp_production_create_prints" model="ir.actions.server">
+        <field name="name">Create OctoPrint</field>
+        <field name="model_id" ref="model_mrp_production" />
+        <field name="binding_model_id" ref="model_mrp_production" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Create OctoPrint',
+            'res_model': 'mrp.production.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_mrp_ids': records.filtered(lambda r: r.stl_file != False).ids},
+            }
+        </field>
+    </record>
+
+</odoo>

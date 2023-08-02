@@ -15,13 +15,13 @@ integrating OctoPrint with the manufacturing application.""",
         'mrp',
     ],
     'data': [
-        'security/octoprint_groups.xml',
         'security/ir.model.access.csv',
-        
+        'wizards/mrp_production_wizard_views.xml',
         'views/mrp_production_views_inherit.xml',
-        'views/octoproint_menuitems.xml',
+        'views/octoprint_menuitems.xml',
         'views/octoprint_print_views.xml',
         'views/octoprint_printer_views.xml',
+        # 'views/octoprint_slicer_views.xml',
     ],
-    'application': True
+    'application': True,
 }
