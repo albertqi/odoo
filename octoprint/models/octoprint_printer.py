@@ -9,7 +9,7 @@ class OctoPrintPrinter(models.Model):
     slicer_ids = fields.One2many('octoprint.slicer', 'printer_id', string='Slicers')
 
     # Printer Data
-    printer_id = fields.Integer(string='Printer ID', required=True)
+    printer_id = fields.Integer(string='Printer ID', required=True, readonly=True, compute='_compute_printer_id')
     color = fields.Char(default='default')
     model = fields.Char(required=True)
     default = fields.Boolean()
@@ -58,4 +58,10 @@ class OctoPrintPrinter(models.Model):
     extruder_count = fields.Integer()
     extruder_shared_nozzle = fields.Boolean(string='Shared Nozzle', default=False)
     extruder_nozzle_diameter = fields.Float(string='Nozzle Diameter')
-    extruder_nozzle_extrusion_length = fields.Float(string='Default Extrusion Length')
+    extruder_nozzle_length = fields.Float(string='Default Extrusion Length')
+
+
+    def _compute_printer_id(self):
+        self.ensure_one()
+        #TODO: API call using GET /api/printerprofiles
+        self.printer_id = 1

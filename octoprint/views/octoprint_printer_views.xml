@@ -30,12 +30,51 @@
 					</group>
 					<notebook>
 						<page string="Printer Volume Information">
-							<field name="volume_form_factor" />
-							<field name="volume_origin" />
-							<field name="volume_width" />
-							<field name="volume_height" />
-							<field name="volume_depth" />
-							<field name="volume_custom_box" />
+							<group>
+								<group string="Printer volume">
+									<field name="volume_form_factor" />
+									<field name="volume_origin" />
+									<field name="volume_width" />
+									<field name="volume_height" />
+									<field name="volume_depth" />
+									<field name="volume_custom_box" />
+								</group>
+								<group attrs="{'invisible': [('volume_custom_box', '=', False)]}">
+									<separator string="Custom box dimensions" />
+									<field name="volume_custom_box_min_x" />
+									<field name="volume_custom_box_max_x" />
+									<field name="volume_custom_box_min_y" />
+									<field name="volume_custom_box_max_y" />
+									<field name="volume_custom_box_min_z" />
+									<field name="volume_custom_box_max_z" />
+								</group>	
+							</group>
+						</page>
+						<page string="Axis Information">
+							<group>
+								<group>
+									<separator string="Axis Speed" />
+									<field name="axes_x_speed" />
+									<field name="axes_y_speed" />
+									<field name="axes_z_speed" />
+									<field name="axes_e_speed" />
+								</group>
+								<group>
+									<separator string="Axis Inversion" />
+									<field name="axes_x_inverted" />
+									<field name="axes_y_inverted" />
+									<field name="axes_z_inverted" />
+									<field name="axes_e_inverted" />
+								</group>
+							</group>
+						</page>
+						<page string="Extruder Information">
+							<group>
+								<field name="extruder_count"/>
+								<field name="extruder_shared_nozzle"/>
+								<field name="extruder_nozzle_diameter"/>
+								<field name="extruder_nozzle_length"/>
+							</group>
 						</page>
 					</notebook>
 				</sheet>
