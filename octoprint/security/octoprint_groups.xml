@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="group_octoprint_print_user" model="res.groups">
+		<field name="name">Octoprint Print/User</field>
+	</record>
+	<record id="group_octoprint_print_admin" model="res.groups">
+		<field name="name">Octoprint Print/Admin</field>
+		<field name="implied_ids" eval="[Command.link(ref('group_octoprint_print_user'))]" />
+	</record>
+	<record id="group_octoprint_slicer_user" model="res.groups">
+		<field name="name">Octoprint Slicer/User</field>
+	</record>
+	<record id="group_octoprint_slicer_admin" model="res.groups">
+		<field name="name">Octoprint Slicer/Admin</field>
+		<field name="implied_ids" eval="[Command.link(ref('group_octoprint_slicer_user'))]" />
+	</record>
+</odoo>

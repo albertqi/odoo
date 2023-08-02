@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record model="ir.actions.act_window" id="octoprint_list_prints">
+			<field name="name">Prints</field>
+			<field name="res_model">octoprint.print</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Prints show up here
+				</p>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="octoprint_list_slicers">
+			<field name="name">Prints</field>
+			<field name="res_model">octoprint.slicer</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Make your first slicer profile
+				</p>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="octoprint_list_printers">
+			<field name="name">Printers</field>
+			<field name="res_model">octoprint.printer</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Make your first printer profile
+				</p>
+			</field>
+		</record>
+		<menuitem name="Prints" id="menu_prints" sequence="1">
+			<menuitem id="menu_octoprint_sub" name="Octoprint" sequence="1">
+				<menuitem id="menu_octoprint_prints" name="Prints" sequence="1"
+					action="octoprint_list_prints" />
+				<menuitem id="menu_octoprint_slicing_profiles" name="Slicing Profiles" sequence="2"
+				action="octoprint_list_slicers" />
+				<menuitem id="menu_octoprint_printer_profiles" name="Printer Profiles" sequence="3"
+					action="octoprint_list_printers" />
+			</menuitem>
+		</menuitem>
+	</data>
+</odoo> 
