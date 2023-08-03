@@ -11,7 +11,18 @@ class OctoPrintPrint(models.Model):
     stl_file_name = fields.Char(string='STL File Name')
     slicer_id = fields.Many2one('octoprint.slicer')
     printer_id = fields.Many2one(related='slicer_id.printer_id')
-    state = fields.Char(compute='_compute_state')
+    state = fields.Selection(
+        [
+            ('open', 'Open'),
+            ('print', 'Printing'),
+            ('done', 'Finished'),
+            ('error', 'Error'),
+            ('cancel', 'Cancelled'),
+        ],
+        string='Status',
+        default='open',
+        required=True,
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -24,7 +35,8 @@ class OctoPrintPrint(models.Model):
         # Returns only the currently printing job
 
         for record in self:
-            record.state = 'Printing'
+            record.state = 'open'
 
-    def action_start_octoprint_job(self):
-        return
+    def action_cancel(self):
+        for record in self:
+            record.state = 'cancel'

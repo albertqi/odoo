@@ -1,10 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+
+	<!-- Form View -->
 	<record id="octoprint_print_view_form" model="ir.ui.view">
 		<field name="name">octoprint.print.view.form</field>
 		<field name="model">octoprint.print</field>
 		<field name="arch" type="xml">
 			<form string="Print View">
+				<header>
+					<button name="action_cancel" type="object" string="Cancel"
+						attrs="{'invisible': ['|', ('state', 'in', ['error', 'cancel']), ('name', '=', 'New')]}" />
+					<field name="state" widget="statusbar" statusbar_visible="open,print,done" />
+				</header>
 				<sheet>
 					<h1>
 						<field name="name" />
@@ -12,52 +19,51 @@
 					<group>
 						<group>
 							<separator string="Print Information" />
-							<field name="mrp_id" />
-							<field name="state" />
+							<field name="stl_file_name" invisible="1" />
+							<field name="stl_file" filename="stl_file_name" />
+							<field name="slicer_id" />
+							<field name="printer_id" />
 						</group>
-						<!-- <group>
-							<separator string="Printer Information" />
-							<field name="owner_id" />
-							<field name="owner_phone" widget='phone' />
-							<field name="owner_email" widget='email' />
-						</group> -->
+						<group>
+							<separator string="Other Information" />
+							<field name="mrp_id" />
+						</group>
 					</group>
-					<!-- <notebook>
-						<page string="Related Documents">
-							<label for="certificate_title" string="Certificate Title" />
-							<field name="certificate_title" />
-						</page>
-					</notebook> -->
 				</sheet>
 			</form>
 		</field>
 	</record>
 
-
+	<!-- List View -->
 	<record id="octoprint_print_view_list" model="ir.ui.view">
 		<field name="name">octoprint.print.view.list</field>
 		<field name="model">octoprint.print</field>
 		<field name="arch" type="xml">
 			<tree string="Print List">
 				<field name="name" />
-				<field name="mrp_id" />
+				<field name="stl_file_name" invisible="1" />
+				<field name="stl_file" filename="stl_file_name" widget="binary" />
+				<field name="slicer_id" />
+				<field name="printer_id" />
 				<field name="state" />
 			</tree>
 		</field>
 	</record>
 
-	<!-- <record id="motorcycle_registry_view_search" model="ir.ui.view">
-		<field name="name">motorcycle.registry.view.search</field>
-		<field name="model">motorcycle.registry</field>
+	<!-- Search View -->
+	<record id="octoprint_print_view_search" model="ir.ui.view">
+		<field name="name">octoprint.print.view.search</field>
+		<field name="model">octoprint.print</field>
 		<field name="arch" type="xml">
-			<search>
-				<field name="registry_number" />
-				<field name="vin" />
-				<field name="owner_id" />
-				<field name="license_plate" />
+			<search string="Print Search">
+				<field name="name" />
+				<field name="stl_file_name" />
+				<field name="slicer_id" />
+				<field name="printer_id" />
+				<field name="mrp_id" />
+				<field name="state" />
 			</search>
 		</field>
-	</record> -->
-
+	</record>
 
 </odoo>
