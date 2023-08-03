@@ -8,7 +8,15 @@
             <form string="Manufacturing Wizard">
                 <group>
                     <group />
-                    <field name="mrp_ids" />
+                    <field name="mrp_ids" widget="many2many">
+                        <tree>
+                            <field name="name" />
+                            <field name="stl_file_name" invisible="1" />
+                            <field name="stl_file" filename="stl_file_name" widget="binary" />
+                            <field name="slicer_id" />
+                            <field name="printer_id" />
+                        </tree>
+                    </field>
                 </group>
                 <footer>
                     <button name="create_prints" type="object" string="Submit"

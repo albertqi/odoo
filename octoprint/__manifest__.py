@@ -16,6 +16,7 @@ integrating OctoPrint with the manufacturing application.""",
     ],
     'data': [
         'security/ir.model.access.csv',
+        'data/octoprint_data.xml',
         'wizards/mrp_production_wizard_views.xml',
         'views/mrp_production_views_inherit.xml',
         'views/octoprint_menuitems.xml',
