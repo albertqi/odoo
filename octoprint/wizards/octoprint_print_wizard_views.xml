@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="octoprint_print_wizard_view_form" model="ir.ui.view">
+        <field name="name">octoprint.print.wizard.form</field>
+        <field name="model">octoprint.print.wizard</field>
+        <field name="arch" type="xml">
+            <form string="OctoPrint Wizard">
+                <group>
+                    <group />
+                    <field name="print_ids" />
+                </group>
+                <footer>
+                    <button name="print" type="object" string="Submit"
+                        class="btn-primary" />
+                    <button type="object" string="Close" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_octoprint_print" model="ir.actions.server">
+        <field name="name">Print OctoPrint</field>
+        <field name="model_id" ref="model_octoprint_print" />
+        <field name="binding_model_id" ref="model_octoprint_print" />
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Print OctoPrint',
+            'res_model': 'octoprint.print.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_print_ids': records.filtered(lambda r: True).ids},
+            }
+        </field>
+    </record>
+
+</odoo>
