@@ -2,8 +2,8 @@
 <odoo>
     <data noupdate="1">
         <record id="sequence_sale_commission" model="ir.sequence">
-            <field name="name">Name</field>
-            <field name="code">name</field>
+            <field name="name">Sales Commission Name</field>
+            <field name="code">sale.commission</field>
             <field name="prefix">SC</field>
             <field name="padding">4</field>
             <field name="number_increment">1</field>

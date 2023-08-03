@@ -40,7 +40,7 @@ class SaleCommission(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            vals['name'] = self.env['ir.sequence'].next_by_code('name')
+            vals['name'] = self.env['ir.sequence'].next_by_code('sale.commission')
         return super(SaleCommission, self).create(vals_list)
 
     @api.ondelete(at_uninstall=False)
