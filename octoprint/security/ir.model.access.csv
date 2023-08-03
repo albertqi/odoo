@@ -1,4 +1,6 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+octoprint_extruder_admin,octoprint extruder admin,model_octoprint_extruder,base.group_system,1,1,1,1
+octoprint_extruder_user,octoprint extruder user,model_octoprint_extruder,base.group_user,1,0,1,0
 octoprint_print_admin,octoprint print admin,model_octoprint_print,base.group_system,1,1,1,1
 octoprint_print_user,octoprint print user,model_octoprint_print,base.group_user,1,0,1,0
 octoprint_printer_admin,octoprint printer admin,model_octoprint_printer,base.group_system,1,1,1,1

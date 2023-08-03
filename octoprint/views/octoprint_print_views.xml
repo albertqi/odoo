@@ -17,15 +17,13 @@
 						<field name="name" />
 					</h1>
 					<group>
-						<group>
-							<separator string="Print Information" />
+						<group string="Print Information">
 							<field name="stl_file_name" invisible="1" />
 							<field name="stl_file" filename="stl_file_name" />
 							<field name="slicer_id" />
 							<field name="printer_id" />
 						</group>
-						<group>
-							<separator string="Other Information" />
+						<group string="Other Information">
 							<field name="mrp_id" />
 						</group>
 					</group>
