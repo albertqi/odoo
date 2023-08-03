@@ -32,7 +32,7 @@ class OctoPrintPrinter(models.Model):
     model = fields.Char(required=True)
     default = fields.Boolean(required=True)
     current = fields.Boolean(required=True)
-    has_heated_bed = fields.Boolean(required=True)
+    has_heated_bed = fields.Boolean(default=True, required=True)
     has_heated_chamber = fields.Boolean(required=True)
 
     # Volume
@@ -54,9 +54,9 @@ class OctoPrintPrinter(models.Model):
         string='Origin',
         required=True,
     )
-    volume_width = fields.Float(string='Width', required=True)
-    volume_depth = fields.Float(string='Depth', required=True)
-    volume_height = fields.Float(string='Height', required=True)
+    volume_width = fields.Float(default=200.0, string='Width', required=True)
+    volume_depth = fields.Float(default=200.0, string='Depth', required=True)
+    volume_height = fields.Float(default=200.0, string='Height', required=True)
     volume_custom_box = fields.Boolean(string='Custom Box', required=True)
 
     volume_custom_box_min_x = fields.Float(string='Min X')
@@ -158,6 +158,37 @@ class OctoPrintPrinter(models.Model):
                 raise ValidationError(
                     'The number of extruders does not match the count.'
                 )
+
+    @api.constrains(
+        'volume_custom_box',
+        'volume_custom_box_min_x',
+        'volume_custom_box_min_y',
+        'volume_custom_box_min_z',
+        'volume_custom_box_max_x',
+        'volume_custom_box_max_y',
+        'volume_custom_box_max_z',
+    )
+    def _check_custom_box(self):
+        for record in self:
+            if record.volume_custom_box:
+                if record.volume_custom_box_min_x > 0:
+                    raise ValidationError('The min X must be less than or equal to 0.')
+                if record.volume_custom_box_min_y > 0:
+                    raise ValidationError('The min Y must be less than or equal to 0.')
+                if record.volume_custom_box_min_z > 0:
+                    raise ValidationError('The min Z must be less than or equal to 0.')
+                if record.volume_custom_box_max_x < record.volume_width:
+                    raise ValidationError(
+                        f'The max X must be greater than or equal to {record.volume_width}.'
+                    )
+                if record.volume_custom_box_max_y < record.volume_depth:
+                    raise ValidationError(
+                        f'The max Y must be greater than or equal to {record.volume_depth}.'
+                    )
+                if record.volume_custom_box_max_z < record.volume_height:
+                    raise ValidationError(
+                        f'The max Z must be greater than or equal to {record.volume_height}.'
+                    )
 
     def _parse_to_JSON(self):
         self.ensure_one()
