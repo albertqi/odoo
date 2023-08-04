@@ -64,4 +64,16 @@
 		</field>
 	</record>
 
+	<!-- Print Action -->
+	<record id="action_octoprint_print" model="ir.actions.server">
+		<field name="name">Print OctoPrint</field>
+		<field name="model_id" ref="model_octoprint_print" />
+		<field name="binding_model_id" ref="model_octoprint_print" />
+		<field name="binding_view_types">list,form</field>
+		<field name="state">code</field>
+		<field name="code">
+			records.action_print()
+		</field>
+	</record>
+
 </odoo>

@@ -1,4 +1,5 @@
 from odoo import api, models, fields
+from odoo.exceptions import UserError
 
 
 class OctoPrintPrint(models.Model):
@@ -40,3 +41,12 @@ class OctoPrintPrint(models.Model):
     def action_cancel(self):
         for record in self:
             record.state = 'cancel'
+
+    def action_print(self):
+        if len(self) != 1:
+            raise UserError('Please select exactly one record to print.')
+        if self.state != 'open':
+            raise UserError('Please select an open record to print.')
+        domain = [('state', '=', 'printing'), ('printer_id', '=', self.printer_id.id)]
+        if len(self.env['octoprint.print'].search(domain)) > 0:
+            raise UserError('Please wait for the current print to finish.')

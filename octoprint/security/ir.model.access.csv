@@ -9,5 +9,3 @@ octoprint_slicer_admin,octoprint slicer admin,model_octoprint_slicer,base.group_
 octoprint_slicer_user,octoprint slicer user,model_octoprint_slicer,base.group_user,1,0,1,0
 mrp_production_wizard_admin,mrp production wizard admin,model_mrp_production_wizard,base.group_system,1,1,1,1
 mrp_production_wizard_user,mrp production wizard user,model_mrp_production_wizard,base.group_user,1,0,1,0
-octoprint_print_wizard_admin,octoprint print wizard admin,model_octoprint_print_wizard,base.group_system,1,1,1,1
-octoprint_print_wizard_user,octoprint print wizard user,model_octoprint_print_wizard,base.group_user,1,0,1,0
