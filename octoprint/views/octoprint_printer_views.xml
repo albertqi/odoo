@@ -24,45 +24,45 @@
 							<field name="model" />
 							<field name="default" />
 							<field name="current" />
-							<field name="has_heated_bed" />
-							<field name="has_heated_chamber" />
+							<field name="heated_bed" />
+							<field name="heated_chamber" />
 						</group>
 					</group>
 					<notebook>
 						<page string="Volume">
 							<group>
 								<group string="Printer Volume">
-									<field name="volume_form_factor" />
-									<field name="volume_origin" />
-									<field name="volume_width" />
-									<field name="volume_height" />
-									<field name="volume_depth" />
-									<field name="volume_custom_box" />
+									<field name="form_factor" />
+									<field name="origin" />
+									<field name="width" />
+									<field name="height" />
+									<field name="depth" />
+									<field name="custom_box" />
 								</group>
 								<group string="Custom Box Dimensions"
-									attrs="{'invisible': [('volume_custom_box', '=', False)]}">
-									<field name="volume_custom_box_min_x" />
-									<field name="volume_custom_box_max_x" />
-									<field name="volume_custom_box_min_y" />
-									<field name="volume_custom_box_max_y" />
-									<field name="volume_custom_box_min_z" />
-									<field name="volume_custom_box_max_z" />
+									attrs="{'invisible': [('custom_box', '=', False)]}">
+									<field name="min_x" />
+									<field name="max_x" />
+									<field name="min_y" />
+									<field name="max_y" />
+									<field name="min_z" />
+									<field name="max_z" />
 								</group>
 							</group>
 						</page>
 						<page string="Axes">
 							<group>
 								<group string="Axis Speed">
-									<field name="axes_x_speed" />
-									<field name="axes_y_speed" />
-									<field name="axes_z_speed" />
-									<field name="axes_e_speed" />
+									<field name="x_speed" />
+									<field name="y_speed" />
+									<field name="z_speed" />
+									<field name="e_speed" />
 								</group>
 								<group string="Axis Inversion">
-									<field name="axes_x_inverted" />
-									<field name="axes_y_inverted" />
-									<field name="axes_z_inverted" />
-									<field name="axes_e_inverted" />
+									<field name="x_inverted" />
+									<field name="y_inverted" />
+									<field name="z_inverted" />
+									<field name="e_inverted" />
 								</group>
 							</group>
 						</page>
@@ -70,9 +70,9 @@
 							<group>
 								<group string="Extruder Information">
 									<field name="extruder_count" />
-									<field name="extruder_shared_nozzle" />
-									<field name="extruder_nozzle_diameter" />
-									<field name="extruder_nozzle_length" />
+									<field name="shared_nozzle" />
+									<field name="nozzle_diameter" />
+									<field name="nozzle_length" />
 								</group>
 								<separator string="Extruders" />
 								<field name="extruder_ids" />

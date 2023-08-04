@@ -14,8 +14,11 @@ class OctoPrintPrinter(models.Model):
     slicer_ids = fields.One2many('octoprint.slicer', 'printer_id', string='Slicers')
     slicer_count = fields.Integer(compute='_compute_slicer_count')
 
-    # Printer Data
+    # General
     profile_id = fields.Char(required=True)
+    model = fields.Char(required=True)
+
+    # Printer Bed
     color = fields.Selection(
         [
             ('default', 'Default'),
@@ -29,62 +32,61 @@ class OctoPrintPrinter(models.Model):
         default='default',
         required=True,
     )
-    model = fields.Char(required=True)
     default = fields.Boolean(required=True)
     current = fields.Boolean(required=True)
-    has_heated_bed = fields.Boolean(default=True, required=True)
-    has_heated_chamber = fields.Boolean(required=True)
+    heated_bed = fields.Boolean(default=True, required=True)
+    heated_chamber = fields.Boolean(required=True)
 
-    # Volume
-    volume_form_factor = fields.Selection(
+    # Build Volume
+    form_factor = fields.Selection(
         [
             ('rectangular', 'Rectangular'),
             ('circular', 'Circular'),
         ],
         default='rectangular',
-        string='Form Factor',
         required=True,
     )
-    volume_origin = fields.Selection(
+    origin = fields.Selection(
         [
             ('lowerleft', 'Lower Left'),
             ('center', 'Center'),
         ],
         default='lowerleft',
-        string='Origin',
         required=True,
     )
-    volume_width = fields.Float(default=200.0, string='Width', required=True)
-    volume_depth = fields.Float(default=200.0, string='Depth', required=True)
-    volume_height = fields.Float(default=200.0, string='Height', required=True)
-    volume_custom_box = fields.Boolean(string='Custom Box', required=True)
 
-    volume_custom_box_min_x = fields.Float(string='Min X')
-    volume_custom_box_min_y = fields.Float(string='Min Y')
-    volume_custom_box_min_z = fields.Float(string='Min Z')
+    width = fields.Float(default=200.0, required=True)
+    depth = fields.Float(default=200.0, required=True)
+    height = fields.Float(default=200.0, required=True)
 
-    volume_custom_box_max_x = fields.Float(string='Max X')
-    volume_custom_box_max_y = fields.Float(string='Max Y')
-    volume_custom_box_max_z = fields.Float(string='Max Z')
+    custom_box = fields.Boolean(string='Custom Bounding Box', required=True)
+
+    min_x = fields.Float()
+    min_y = fields.Float()
+    min_z = fields.Float()
+
+    max_x = fields.Float()
+    max_y = fields.Float()
+    max_z = fields.Float()
 
     # Axes
-    axes_x_speed = fields.Integer(string='X Axis Speed', required=True)
-    axes_y_speed = fields.Integer(string='Y Axis Speed', required=True)
-    axes_z_speed = fields.Integer(string='Z Axis Speed', required=True)
-    axes_e_speed = fields.Integer(string='E Axis Speed', required=True)
+    x_speed = fields.Integer(default=6000, required=True)
+    y_speed = fields.Integer(default=6000, required=True)
+    z_speed = fields.Integer(default=200, required=True)
+    e_speed = fields.Integer(default=300, required=True)
 
-    axes_x_inverted = fields.Boolean(string='X Axis Inverted', required=True)
-    axes_y_inverted = fields.Boolean(string='Y Axis Inverted', required=True)
-    axes_z_inverted = fields.Boolean(string='Z Axis Inverted', required=True)
-    axes_e_inverted = fields.Boolean(string='E Axis Inverted', required=True)
+    x_inverted = fields.Boolean(required=True)
+    y_inverted = fields.Boolean(required=True)
+    z_inverted = fields.Boolean(required=True)
+    e_inverted = fields.Boolean(required=True)
 
     # Extruder
-    extruder_count = fields.Integer(required=True)
-    extruder_shared_nozzle = fields.Boolean(string='Shared Nozzle', required=True)
-    extruder_nozzle_diameter = fields.Float(string='Nozzle Diameter', required=True)
-    extruder_nozzle_length = fields.Integer(
-        string='Default Extrusion Length', required=True
+    extruder_count = fields.Integer(
+        default=1, string='Number of Extruders', required=True
     )
+    shared_nozzle = fields.Boolean(required=True)
+    nozzle_diameter = fields.Float(required=True)
+    nozzle_length = fields.Integer(string='Default Extrusion Length', required=True)
     extruder_ids = fields.One2many(
         'octoprint.extruder', 'printer_id', string='Extruders'
     )
@@ -139,56 +141,60 @@ class OctoPrintPrinter(models.Model):
             'domain': [('printer_id', '=', self.id)],
         }
 
-    @api.constrains('volume_width', 'volume_depth', 'volume_height')
+    @api.constrains('width', 'depth', 'height')
     def _check_volume_dimensions(self):
         for record in self:
-            if record.volume_width <= 0:
+            if record.width <= 0:
                 raise ValidationError('The width must be positive.')
-            if record.volume_depth <= 0:
+            if record.depth <= 0:
                 raise ValidationError('The depth must be positive.')
-            if record.volume_height <= 0:
+            if record.height <= 0:
                 raise ValidationError('The height must be positive.')
+
+    @api.constrains('custom_box', 'min_x', 'min_y', 'min_z', 'max_x', 'max_y', 'max_z')
+    def _check_custom_box(self):
+        for record in self:
+            if record.custom_box:
+                if record.min_x > 0:
+                    raise ValidationError('The min X must be less than or equal to 0.')
+                if record.min_y > 0:
+                    raise ValidationError('The min Y must be less than or equal to 0.')
+                if record.min_z > 0:
+                    raise ValidationError('The min Z must be less than or equal to 0.')
+                if record.max_x < record.width:
+                    raise ValidationError(
+                        f'The max X must be greater than or equal to {record.width}.'
+                    )
+                if record.max_y < record.depth:
+                    raise ValidationError(
+                        f'The max Y must be greater than or equal to {record.depth}.'
+                    )
+                if record.max_z < record.height:
+                    raise ValidationError(
+                        f'The max Z must be greater than or equal to {record.height}.'
+                    )
+
+    @api.constrains('x_speed', 'y_speed', 'z_speed', 'e_speed')
+    def _check_axes_speed(self):
+        for record in self:
+            if record.x_speed <= 0:
+                raise ValidationError('The X axis speed must be positive.')
+            if record.y_speed <= 0:
+                raise ValidationError('The Y axis speed must be positive.')
+            if record.z_speed <= 0:
+                raise ValidationError('The Z axis speed must be positive.')
+            if record.e_speed <= 0:
+                raise ValidationError('The E axis speed must be positive.')
 
     @api.constrains('extruder_count', 'extruder_ids')
     def _check_extruders(self):
         for record in self:
             if record.extruder_count < 1:
-                raise ValidationError('The number of extruders must be at least 1.')
+                raise ValidationError('You must have at least 1 extruder.')
             if record.extruder_count != len(record.extruder_ids):
                 raise ValidationError(
                     'The number of extruders does not match the count.'
                 )
-
-    @api.constrains(
-        'volume_custom_box',
-        'volume_custom_box_min_x',
-        'volume_custom_box_min_y',
-        'volume_custom_box_min_z',
-        'volume_custom_box_max_x',
-        'volume_custom_box_max_y',
-        'volume_custom_box_max_z',
-    )
-    def _check_custom_box(self):
-        for record in self:
-            if record.volume_custom_box:
-                if record.volume_custom_box_min_x > 0:
-                    raise ValidationError('The min X must be less than or equal to 0.')
-                if record.volume_custom_box_min_y > 0:
-                    raise ValidationError('The min Y must be less than or equal to 0.')
-                if record.volume_custom_box_min_z > 0:
-                    raise ValidationError('The min Z must be less than or equal to 0.')
-                if record.volume_custom_box_max_x < record.volume_width:
-                    raise ValidationError(
-                        f'The max X must be greater than or equal to {record.volume_width}.'
-                    )
-                if record.volume_custom_box_max_y < record.volume_depth:
-                    raise ValidationError(
-                        f'The max Y must be greater than or equal to {record.volume_depth}.'
-                    )
-                if record.volume_custom_box_max_z < record.volume_height:
-                    raise ValidationError(
-                        f'The max Z must be greater than or equal to {record.volume_height}.'
-                    )
 
     def _parse_to_JSON(self):
         self.ensure_one()
@@ -200,48 +206,48 @@ class OctoPrintPrinter(models.Model):
                 'model': self.model,
                 'default': self.default,
                 'current': self.current,
-                'heatedBed': self.has_heated_bed,
-                'heatedChamber': self.has_heated_chamber,
+                'heatedBed': self.heated_bed,
+                'heatedChamber': self.heated_chamber,
                 'axes': {
                     'x': {
-                        'speed': self.axes_x_speed,
-                        'inverted': self.axes_x_inverted,
+                        'speed': self.x_speed,
+                        'inverted': self.x_inverted,
                     },
                     'y': {
-                        'speed': self.axes_y_speed,
-                        'inverted': self.axes_y_inverted,
+                        'speed': self.y_speed,
+                        'inverted': self.y_inverted,
                     },
                     'z': {
-                        'speed': self.axes_z_speed,
-                        'inverted': self.axes_z_inverted,
+                        'speed': self.z_speed,
+                        'inverted': self.z_inverted,
                     },
                     'e': {
-                        'speed': self.axes_e_speed,
-                        'inverted': self.axes_e_inverted,
+                        'speed': self.e_speed,
+                        'inverted': self.e_inverted,
                     },
                 },
                 'volume': {
-                    'formFactor': self.volume_form_factor,
-                    'origin': self.volume_origin,
-                    'width': self.volume_width,
-                    'depth': self.volume_depth,
-                    'height': self.volume_height,
+                    'formFactor': self.form_factor,
+                    'origin': self.origin,
+                    'width': self.width,
+                    'depth': self.depth,
+                    'height': self.height,
                     'custom_box': {
-                        'x_min': self.volume_custom_box_min_x,
-                        'y_min': self.volume_custom_box_min_y,
-                        'z_min': self.volume_custom_box_min_z,
-                        'x_max': self.volume_custom_box_max_x,
-                        'y_max': self.volume_custom_box_max_y,
-                        'z_max': self.volume_custom_box_max_z,
+                        'x_min': self.min_x,
+                        'y_min': self.min_y,
+                        'z_min': self.min_z,
+                        'x_max': self.max_x,
+                        'y_max': self.max_y,
+                        'z_max': self.max_z,
                     }
-                    if self.volume_custom_box
+                    if self.custom_box
                     else False,
                 },
                 'extruder': {
                     'count': self.extruder_count,
-                    'sharedNozzle': self.extruder_shared_nozzle,
-                    'nozzleDiameter': self.extruder_nozzle_diameter,
-                    'defaultExtrusionLength': self.extruder_nozzle_length,
+                    'sharedNozzle': self.shared_nozzle,
+                    'nozzleDiameter': self.nozzle_diameter,
+                    'defaultExtrusionLength': self.nozzle_length,
                     'offsets': [
                         [
                             extruder.x_offset,
