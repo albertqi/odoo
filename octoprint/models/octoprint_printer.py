@@ -1,5 +1,5 @@
 from odoo import api, models, fields
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import requests
 
 apikey = ''
@@ -105,6 +105,9 @@ class OctoPrintPrinter(models.Model):
                 },
                 json=data,
             )
+            response.raise_for_status()
+            if response.status_code != 200:
+                raise UserError(f"Bad Request: {response.json().get('error')}")
         return res
 
     def write(self, vals_list):
@@ -118,6 +121,8 @@ class OctoPrintPrinter(models.Model):
                 },
                 json=data,
             )
+            if response.status_code != 200:
+                raise UserError(f"Bad Request: {response.json().get('error')}")
         return res
 
     def unlink(self):
@@ -126,6 +131,8 @@ class OctoPrintPrinter(models.Model):
                 f'{API_BASE_URL}/api/printerprofiles/{record.profile_id}',
                 params={'apikey': apikey},
             )
+            if response.status_code == 409:
+                raise UserError(f"Bad Request: The profile is the currently selected one!")
         return super(OctoPrintPrinter, self).unlink()
 
     @api.depends('slicer_ids')
