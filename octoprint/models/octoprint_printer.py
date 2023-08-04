@@ -86,7 +86,9 @@ class OctoPrintPrinter(models.Model):
     )
     shared_nozzle = fields.Boolean(required=True)
     nozzle_diameter = fields.Float(required=True)
-    nozzle_length = fields.Integer(string='Default Extrusion Length', required=True)
+    nozzle_length = fields.Integer(
+        default=5, string='Default Extrusion Length', required=True
+    )
     extruder_ids = fields.One2many(
         'octoprint.extruder', 'printer_id', string='Extruders'
     )
