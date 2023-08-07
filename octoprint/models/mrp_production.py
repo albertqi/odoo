@@ -7,7 +7,7 @@ class MrpProduction(models.Model):
     stl_file = fields.Binary(string='STL File')
     stl_file_name = fields.Char(string='STL File Name')
     slicer_id = fields.Many2one('octoprint.slicer')
-    printer_id = fields.Many2one(related='slicer_id.printer_id')
+    printer_id = fields.Many2one('octoprint.printer')
     print_ids = fields.One2many('octoprint.print', 'mrp_id', string='Prints')
     print_count = fields.Integer(compute='_compute_print_count')
 

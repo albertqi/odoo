@@ -5,12 +5,12 @@ import requests
 apikey = ''
 API_BASE_URL = ''
 
+
 class OctoPrintSlicer(models.Model):
     _name = 'octoprint.slicer'
     _description = 'OctoPrint Slicer'
 
     name = fields.Char(string='Name', required=True)
-    printer_id = fields.Many2one('octoprint.printer')
     default = fields.Boolean(required=True)
 
     description = fields.Text(required=True)
@@ -22,9 +22,6 @@ class OctoPrintSlicer(models.Model):
     fill_density = fields.Integer(required=True)
     layer_height = fields.Float(default=0.2, required=True)
     skirt_line_count = fields.Integer(default=2, required=True)
-
-    
-
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -65,7 +62,9 @@ class OctoPrintSlicer(models.Model):
                 params={'apikey': apikey},
             )
             if response.status_code == 409:
-                raise UserError(f"Bad Request: The profile is the currently selected one!")
+                raise UserError(
+                    f"Bad Request: The profile is the currently selected one!"
+                )
         return super(OctoPrintSlicer, self).unlink()
 
     def _parse_to_JSON(self):
@@ -78,6 +77,6 @@ class OctoPrintSlicer(models.Model):
                 "infill": self.infill,
                 "fill_density": self.fill_density,
                 "layer_height": self.layer_height,
-                "skirt_line_count": self.skirt_line_count
-            }
+                "skirt_line_count": self.skirt_line_count,
+            },
         }

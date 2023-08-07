@@ -11,10 +11,12 @@
 					</h1>
 					<group>
 						<group string="Slicer Information">
+							<field name="slicer_id" />
 							<field name="infill" />
 							<field name="fill_density" />
 							<field name="layer_height" />
 							<field name="skirt_line_count" />
+							<field name="default" />
 						</group>
 					</group>
 					<notebook>
@@ -28,11 +30,11 @@
 	</record>
 
 
-	<record id="octoprint_print_view_list" model="ir.ui.view">
+	<record id="octoprint_slicer_view_list" model="ir.ui.view">
 		<field name="name">octoprint.slicer.view.list</field>
 		<field name="model">octoprint.slicer</field>
 		<field name="arch" type="xml">
-			<tree string="Print List">
+			<tree string="Slicer List">
 				<field name="name" />
 			</tree>
 		</field>

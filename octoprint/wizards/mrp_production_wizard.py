@@ -16,6 +16,7 @@ class MrpProductionWizard(models.TransientModel):
                 'stl_file': mrp.stl_file,
                 'stl_file_name': mrp.stl_file_name,
                 'slicer_id': mrp.slicer_id.id,
+                'printer_id': mrp.printer_id.id,
             }
             self.env['octoprint.print'].create(record)
 

@@ -11,8 +11,6 @@ class OctoPrintPrinter(models.Model):
     _description = 'OctoPrint Printer'
 
     name = fields.Char(required=True)
-    slicer_ids = fields.One2many('octoprint.slicer', 'printer_id', string='Slicers')
-    slicer_count = fields.Integer(compute='_compute_slicer_count')
 
     # General
     profile_id = fields.Char(required=True)
@@ -132,23 +130,10 @@ class OctoPrintPrinter(models.Model):
                 params={'apikey': apikey},
             )
             if response.status_code == 409:
-                raise UserError(f"Bad Request: The profile is the currently selected one!")
+                raise UserError(
+                    f"Bad Request: The profile is the currently selected one!"
+                )
         return super(OctoPrintPrinter, self).unlink()
-
-    @api.depends('slicer_ids')
-    def _compute_slicer_count(self):
-        for record in self:
-            record.slicer_count = len(record.slicer_ids)
-
-    def action_view_slicers(self):
-        self.ensure_one()
-        return {
-            'name': 'Slicers',
-            'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
-            'res_model': 'octoprint.slicer',
-            'domain': [('printer_id', '=', self.id)],
-        }
 
     @api.constrains('width', 'depth', 'height')
     def _check_volume_dimensions(self):
