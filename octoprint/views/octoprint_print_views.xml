@@ -26,6 +26,11 @@
 						<group string="Other Information">
 							<field name="mrp_id" />
 						</group>
+						<group string="Print Status">
+							<field name="completion" widget="percentage" />
+							<field name="current_print_time" />
+							<field name="remaining_print_time" />
+						</group>
 					</group>
 				</sheet>
 			</form>
@@ -43,6 +48,7 @@
 				<field name="stl_file" filename="stl_file_name" widget="binary" />
 				<field name="slicer_id" />
 				<field name="printer_id" />
+				<field name="completion" widget="percentage" />
 				<field name="state" />
 			</tree>
 		</field>

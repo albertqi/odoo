@@ -29,7 +29,11 @@ class OctoPrintPrint(models.Model):
         string='Status',
         default='open',
         required=True,
+        compute='_compute_state',
     )
+    completion = fields.Float(compute='_compute_progress')
+    current_print_time = fields.Integer(compute='_compute_progress')
+    remaining_print_time = fields.Integer(compute='_compute_progress')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -50,7 +54,9 @@ class OctoPrintPrint(models.Model):
         self.ensure_one()
         try:
             file = io.BytesIO(self.stl_file)
-            file.name = self.stl_file_name
+            file.name = (
+                f'{self.name}.stl'  # STL file will be named after the print name
+            )
             file.seek(0)
             response = requests.post(
                 f'{API_BASE_URL}/api/files/local',
@@ -66,11 +72,42 @@ class OctoPrintPrint(models.Model):
             raise UserError(f"Bad Request: {response.json().get('error')}")
 
     def _compute_state(self):
-        # TODO: API call using GET /api/job
-        # Returns only the currently printing job
-
+        job = self._get_job()
         for record in self:
-            record.state = 'open'
+            if job['job']['file']['name'] == f'{record.name}.gco':
+                if job['state'] == 'Error':
+                    record.state = 'error'
+                elif job['state'] == 'Cancelling':
+                    record.state = 'cancel'
+            else:
+                record.state = record.state
+
+    def _compute_progress(self):
+        # TODO: Change from job operation to printer operation
+        job = self._get_job()
+        for record in self:
+            if job['job']['file']['name'] == f'{record.name}.gco':
+                record.completion = job['progress']['completion']
+                record.current_print_time = job['progress']['printTime']
+                record.remaining_print_time = job['progress']['printTimeLeft']
+            else:
+                record.completion = record.completion
+                record.current_print_time = record.current_print_time
+                record.remaining_print_time = record.remaining_print_time
+
+    def _get_job(self):
+        response = None
+        try:
+            response = requests.get(
+                f'{API_BASE_URL}/api/job',
+                params={
+                    'apikey': apikey,
+                },
+            )
+            response.raise_for_status()
+            return response.json()
+        except:
+            raise UserError(f"Bad Request: {response.json().get('error')}")
 
     def action_cancel(self):
         for record in self:
