@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_inherit_octoprint" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.octoprint</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Octoprint Settings"
+                    string="Octoprint Settings" data-key="octoprint">
+                    <h2>Octoprint Settings</h2>
+                    <div class="row mt16 o_settings_container" id="certificate_planer_setting_container">
+                        <div class="col-12 col-lg-12 o_setting_box" id="certificate_planer_text_block">
+                            <div class="o_setting_right_pane">
+                                <div class="text-muted">
+                                    Settings for Octoprint API
+                                </div>
+                                <div class="content-group">
+                                    <div class="row mt16">
+                                        <label class="col-lg-3 o_light_label"
+                                            string="Octoprint Base URL" for="octoprint_base_url" />
+                                        <div class="text-muted">URL of the server (include the http://)</div>
+                                        <field name="octoprint_base_url" class="oe_inline"
+                                            style="width: 70% !important;" />
+                                    </div>
+
+                                    <div class="row mt16">
+                                        <label class="col-lg-3 o_light_label" string="Octoprint API Key"
+                                            for="octoprint_api_key" />
+                                        <div class="text-muted">API key to access the server <br />
+                                            Generate via User Settings/Access on OctoPi
+                                        </div>
+                                        <field name="octoprint_api_key" class="oe_inline"
+                                            style="width: 70% !important;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -3,11 +3,6 @@ from odoo.exceptions import UserError
 import requests
 import io
 
-
-apikey = ''
-API_BASE_URL = ''
-
-
 class OctoPrintPrint(models.Model):
     _name = 'octoprint.print'
     _description = 'OctoPrint Print'
@@ -52,6 +47,7 @@ class OctoPrintPrint(models.Model):
 
     def _upload_file(self):
         self.ensure_one()
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         try:
             file = io.BytesIO(self.stl_file)
             file.name = (
@@ -59,9 +55,9 @@ class OctoPrintPrint(models.Model):
             )
             file.seek(0)
             response = requests.post(
-                f'{API_BASE_URL}/api/files/local',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/files/local',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param('octoprint.api_key'),
                 },
                 files={
                     'file': io.BufferedReader(file),
@@ -96,12 +92,13 @@ class OctoPrintPrint(models.Model):
                 record.remaining_print_time = record.remaining_print_time
 
     def _get_job(self):
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         response = None
         try:
             response = requests.get(
-                f'{API_BASE_URL}/api/job',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/job',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param("octoprint.api_key"),
                 },
             )
             response.raise_for_status()
@@ -114,6 +111,7 @@ class OctoPrintPrint(models.Model):
             record.state = 'cancel'
 
     def action_print(self):
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         if len(self) != 1:
             raise UserError('Please select exactly one record to print.')
         if self.state != 'open':
@@ -125,9 +123,9 @@ class OctoPrintPrint(models.Model):
         # Issue print command
         try:
             response = requests.post(
-                f'{API_BASE_URL}/api/files/local/{self.stl_file_name}',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/files/local/{self.stl_file_name}',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param('octoprint.api_key'),
                 },
                 json={
                     'command': 'slice',

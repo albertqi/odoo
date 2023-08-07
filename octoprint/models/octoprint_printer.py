@@ -2,10 +2,6 @@ from odoo import api, models, fields
 from odoo.exceptions import ValidationError, UserError
 import requests
 
-apikey = ''
-API_BASE_URL = ''
-
-
 class OctoPrintPrinter(models.Model):
     _name = 'octoprint.printer'
     _description = 'OctoPrint Printer'
@@ -94,12 +90,13 @@ class OctoPrintPrinter(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         res = super(OctoPrintPrinter, self).create(vals_list)
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in res:
             data = record._parse_to_JSON()
             response = requests.post(
-                f'{API_BASE_URL}/api/printerprofiles',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/printerprofiles',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param('octoprint.api_key'),
                 },
                 json=data,
             )
@@ -110,12 +107,13 @@ class OctoPrintPrinter(models.Model):
 
     def write(self, vals_list):
         res = super(OctoPrintPrinter, self).write(vals_list)
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in self:
             data = record._parse_to_JSON()
-            response = requests.patch(
-                f'{API_BASE_URL}/api/printerprofiles/{record.profile_id}',
+            response = requests.patch(  
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/printerprofiles/{record.profile_id}',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param("octoprint.api_key"),
                 },
                 json=data,
             )
@@ -124,10 +122,11 @@ class OctoPrintPrinter(models.Model):
         return res
 
     def unlink(self):
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in self:
             response = requests.delete(
-                f'{API_BASE_URL}/api/printerprofiles/{record.profile_id}',
-                params={'apikey': apikey},
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/printerprofiles/{record.profile_id}',
+                params={'apikey': IPCSudo.get_param("octoprint.api_key")},
             )
             if response.status_code == 409:
                 raise UserError(

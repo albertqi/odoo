@@ -2,10 +2,6 @@ from odoo import api, models, fields
 from odoo.exceptions import UserError, ValidationError
 import requests
 
-apikey = ''
-API_BASE_URL = ''
-
-
 class OctoPrintSlicer(models.Model):
     _name = 'octoprint.slicer'
     _description = 'OctoPrint Slicer'
@@ -26,12 +22,13 @@ class OctoPrintSlicer(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         res = super(OctoPrintSlicer, self).create(vals_list)
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in res:
             data = record._parse_to_JSON()
             response = requests.put(
-                f'{API_BASE_URL}/api/slicing/curalegacy/profiles/{record.slicer_id}',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/slicing/curalegacy/profiles/{record.slicer_id}',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param("octoprint.api_key"),
                 },
                 json=data,
             )
@@ -42,12 +39,13 @@ class OctoPrintSlicer(models.Model):
 
     def write(self, vals_list):
         res = super(OctoPrintSlicer, self).write(vals_list)
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in self:
             data = record._parse_to_JSON()
             response = requests.patch(
-                f'{API_BASE_URL}/api/slicing/curalegacy/profiles/{record.slicer_id}',
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/slicing/curalegacy/profiles/{record.slicer_id}',
                 params={
-                    'apikey': apikey,
+                    'apikey': IPCSudo.get_param("octoprint.api_key"),
                 },
                 json=data,
             )
@@ -56,10 +54,11 @@ class OctoPrintSlicer(models.Model):
         return res
 
     def unlink(self):
+        IPCSudo = self.env['ir.config_parameter'].sudo()
         for record in self:
             response = requests.delete(
-                f'{API_BASE_URL}/api/slicing/curalegacy/profiles/{record.slicer_id}',
-                params={'apikey': apikey},
+                f'{IPCSudo.get_param("octoprint.base_url")}/api/slicing/curalegacy/profiles/{record.slicer_id}',
+                params={'apikey': IPCSudo.get_param("octoprint.api_key")},
             )
             if response.status_code == 409:
                 raise UserError(

@@ -1,55 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-	<data>
+    <data>
 
-		<record model="ir.actions.act_window" id="octoprint_list_prints">
-			<field name="name">Prints</field>
-			<field name="res_model">octoprint.print</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					Create a print
-				</p>
-			</field>
-		</record>
+        <record model="ir.actions.act_window" id="octoprint_list_prints">
+            <field name="name">Prints</field>
+            <field name="res_model">octoprint.print</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a print
+                </p>
+            </field>
+        </record>
 
-		<record model="ir.actions.act_window" id="octoprint_list_slicers">
-			<field name="name">Slicers</field>
-			<field name="res_model">octoprint.slicer</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					Create a slicer profile
-				</p>
-			</field>
-		</record>
+        <record model="ir.actions.act_window" id="octoprint_list_slicers">
+            <field name="name">Slicers</field>
+            <field name="res_model">octoprint.slicer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a slicer profile
+                </p>
+            </field>
+        </record>
 
-		<record model="ir.actions.act_window" id="octoprint_list_printers">
-			<field name="name">Printers</field>
-			<field name="res_model">octoprint.printer</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="o_view_nocontent_smiling_face">
-					Create a printer profile
-				</p>
-			</field>
-		</record>
+        <record model="ir.actions.act_window" id="octoprint_list_printers">
+            <field name="name">Printers</field>
+            <field name="res_model">octoprint.printer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a printer profile
+                </p>
+            </field>
+        </record>
 
-		<menuitem name="3D Printing" id="menu_prints" sequence="1">
+        <record id="action_octoprint_config_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'octoprint'}</field>
+        </record>
 
-			<menuitem id="menu_octoprint_sub" name="OctoPrint" sequence="1">
-				<menuitem id="menu_octoprint_prints" name="Prints" sequence="1"
-					action="octoprint_list_prints" />
-			</menuitem>
+        <menuitem name="3D Printing" id="menu_prints" sequence="1">
 
-			<menuitem id="menu_octoprint_configuration" name="Configuration" sequence="2">
-				<menuitem id="menu_octoprint_printer_profiles" name="Printer Profiles"
-					sequence="1" action="octoprint_list_printers" />
-				<menuitem id="menu_octoprint_slicing_profiles" name="Slicing Profiles"
-					sequence="2" action="octoprint_list_slicers" />
-			</menuitem>
+            <menuitem id="menu_octoprint_sub" name="OctoPrint" sequence="1">
+                <menuitem id="menu_octoprint_prints" name="Prints" sequence="1"
+                    action="octoprint_list_prints" />
+            </menuitem>
 
-		</menuitem>
+            <menuitem id="menu_octoprint_configuration" name="Configuration" sequence="2">
+                <menuitem id="menu_res_config_settings" name="Settings" action="action_octoprint_config_settings"/>
+                <menuitem id="menu_octoprint_profiles" name="Profiles">
+                    <menuitem id="menu_octoprint_printer_profiles" name="Printer Profiles"
+                        sequence="1" action="octoprint_list_printers" />
+                    <menuitem id="menu_octoprint_slicing_profiles" name="Slicing Profiles"
+                        sequence="2" action="octoprint_list_slicers" />
+                </menuitem>
+            </menuitem>
 
-	</data>
+        </menuitem>
+
+    </data>
 </odoo> 
