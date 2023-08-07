@@ -23,7 +23,7 @@ integrating OctoPrint with the manufacturing application.""",
         'views/octoprint_menuitems.xml',
         'views/octoprint_print_views.xml',
         'views/octoprint_printer_views.xml',
-        # 'views/octoprint_slicer_views.xml',
+        'views/octoprint_slicer_views.xml',
     ],
     'application': True,
 }
