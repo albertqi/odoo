@@ -52,7 +52,8 @@
             </menuitem>
 
             <menuitem id="menu_octoprint_configuration" name="Configuration" sequence="2">
-                <menuitem id="menu_res_config_settings" name="Settings" action="action_octoprint_config_settings"/>
+                <menuitem id="menu_res_config_settings" name="Settings"
+                    action="action_octoprint_config_settings" />
                 <menuitem id="menu_octoprint_profiles" name="Profiles">
                     <menuitem id="menu_octoprint_printer_profiles" name="Printer Profiles"
                         sequence="1" action="octoprint_list_printers" />

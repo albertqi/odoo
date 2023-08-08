@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 import requests
 import io
 
+
 class OctoPrintPrint(models.Model):
     _name = 'octoprint.print'
     _description = 'OctoPrint Print'
@@ -24,11 +25,11 @@ class OctoPrintPrint(models.Model):
         string='Status',
         default='open',
         required=True,
-        compute='_compute_state',
     )
-    completion = fields.Float(compute='_compute_progress')
-    current_print_time = fields.Integer(compute='_compute_progress')
-    remaining_print_time = fields.Integer(compute='_compute_progress')
+    completion = fields.Float()
+    current_print_time = fields.Integer()
+    remaining_print_time = fields.Integer()
+    is_current_job = fields.Boolean(compute='_compute_fields')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -47,17 +48,17 @@ class OctoPrintPrint(models.Model):
 
     def _upload_file(self):
         self.ensure_one()
-        IPCSudo = self.env['ir.config_parameter'].sudo()
+        icp_sudo = self.env['ir.config_parameter'].sudo()
         try:
             file = io.BytesIO(self.stl_file)
             file.name = (
-                f'{self.name}.stl'  # STL file will be named after the print name
+                f'{self.name}.stl'  # STL file will be named after the print name.
             )
             file.seek(0)
             response = requests.post(
-                f'{IPCSudo.get_param("octoprint.base_url")}/api/files/local',
+                f'{icp_sudo.get_param("octoprint.base_url")}/api/files/local',
                 params={
-                    'apikey': IPCSudo.get_param('octoprint.api_key'),
+                    'apikey': icp_sudo.get_param('octoprint.api_key'),
                 },
                 files={
                     'file': io.BufferedReader(file),
@@ -67,51 +68,63 @@ class OctoPrintPrint(models.Model):
         except:
             raise UserError(f"Bad Request: {response.json().get('error')}")
 
-    def _compute_state(self):
-        job = self._get_job()
+    def _compute_fields(self):
+        icp_sudo = self.env['ir.config_parameter'].sudo()
         for record in self:
-            if job['job']['file']['name'] == f'{record.name}.gco':
-                if job['state'] == 'Error':
-                    record.state = 'error'
-                elif job['state'] == 'Cancelling':
-                    record.state = 'cancel'
-            else:
-                record.state = record.state
+            record.is_current_job = False
 
-    def _compute_progress(self):
-        # TODO: Change from job operation to printer operation
-        job = self._get_job()
-        for record in self:
-            if job['job']['file']['name'] == f'{record.name}.gco':
-                record.completion = job['progress']['completion']
-                record.current_print_time = job['progress']['printTime']
-                record.remaining_print_time = job['progress']['printTimeLeft']
-            else:
-                record.completion = record.completion
-                record.current_print_time = record.current_print_time
-                record.remaining_print_time = record.remaining_print_time
-
-    def _get_job(self):
-        IPCSudo = self.env['ir.config_parameter'].sudo()
-        response = None
+        # Get the current job from OctoPrint.
+        response = job = None
         try:
             response = requests.get(
-                f'{IPCSudo.get_param("octoprint.base_url")}/api/job',
+                f'{icp_sudo.get_param("octoprint.base_url")}/api/job',
                 params={
-                    'apikey': IPCSudo.get_param("octoprint.api_key"),
+                    'apikey': icp_sudo.get_param("octoprint.api_key"),
                 },
             )
             response.raise_for_status()
-            return response.json()
+            job = response.json()
         except:
             raise UserError(f"Bad Request: {response.json().get('error')}")
+
+        # Get the current printer from OctoPrint.
+        response = printer = None
+        try:
+            response = requests.get(
+                f'{icp_sudo.get_param("octoprint.base_url")}/api/printer',
+                params={
+                    'apikey': icp_sudo.get_param("octoprint.api_key"),
+                },
+            )
+            response.raise_for_status()
+            printer = response.json()
+        except:
+            raise UserError(f"Bad Request: {response.json().get('error')}")
+
+        # Update the current job.
+        record = self.filtered(lambda r: job['job']['file']['name'] == f'{r.name}.gco')
+        if not record:
+            return
+
+        record.is_current_job = True
+        record.completion = job['progress']['completion']
+        record.current_print_time = job['progress']['printTime']
+        record.remaining_print_time = job['progress']['printTimeLeft']
+
+        if job['progress']['completion'] >= 1.0:
+            record.state = 'done'
+        elif printer['state']['flags']['error']:
+            record.state = 'error'
+        elif printer['state']['flags']['cancelling']:
+            record.state = 'cancel'
+        else:
+            record.state = 'printing'
 
     def action_cancel(self):
         for record in self:
             record.state = 'cancel'
 
     def action_print(self):
-        IPCSudo = self.env['ir.config_parameter'].sudo()
         if len(self) != 1:
             raise UserError('Please select exactly one record to print.')
         if self.state != 'open':
@@ -121,11 +134,13 @@ class OctoPrintPrint(models.Model):
             raise UserError('Please wait for the current print to finish.')
 
         # Issue print command
+        icp_sudo = self.env['ir.config_parameter'].sudo()
+        response = None
         try:
             response = requests.post(
-                f'{IPCSudo.get_param("octoprint.base_url")}/api/files/local/{self.stl_file_name}',
+                f'{icp_sudo.get_param("octoprint.base_url")}/api/files/local/{self.name}.stl',
                 params={
-                    'apikey': IPCSudo.get_param('octoprint.api_key'),
+                    'apikey': icp_sudo.get_param('octoprint.api_key'),
                 },
                 json={
                     'command': 'slice',

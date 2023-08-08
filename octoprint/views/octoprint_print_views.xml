@@ -14,6 +14,7 @@
 				</header>
 				<sheet>
 					<h1>
+						<field name="is_current_job" invisible="1" />
 						<field name="name" />
 					</h1>
 					<group>
@@ -43,6 +44,7 @@
 		<field name="model">octoprint.print</field>
 		<field name="arch" type="xml">
 			<tree string="Print List">
+				<field name="is_current_job" invisible="1" />
 				<field name="name" />
 				<field name="stl_file_name" invisible="1" />
 				<field name="stl_file" filename="stl_file_name" widget="binary" />
