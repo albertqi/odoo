@@ -1,4 +1,5 @@
 from odoo import api, models, fields
+from odoo import Command
 from odoo.exceptions import UserError
 import requests
 import io
@@ -24,12 +25,16 @@ class OctoPrintPrint(models.Model):
         ],
         string='Status',
         default='open',
+        readonly=True,
         required=True,
     )
-    completion = fields.Float()
-    current_print_time = fields.Integer()
-    remaining_print_time = fields.Integer()
+    completion = fields.Float(readonly=True)
+    current_print_time = fields.Integer(readonly=True)
+    remaining_print_time = fields.Integer(readonly=True)
     is_current_job = fields.Boolean(compute='_compute_fields')
+    statistic_ids = fields.One2many(
+        'octoprint.statistic', 'print_id', string='Statistics', readonly=True
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -107,18 +112,43 @@ class OctoPrintPrint(models.Model):
             return
 
         record.is_current_job = True
-        record.completion = job['progress']['completion']
+        record.completion = job['progress']['completion'] / 100.0
         record.current_print_time = job['progress']['printTime']
         record.remaining_print_time = job['progress']['printTimeLeft']
 
-        if job['progress']['completion'] >= 1.0:
+        if record.state == 'cancel':
+            pass
+        elif job['progress']['completion'] >= 100.0:
             record.state = 'done'
         elif printer['state']['flags']['error']:
             record.state = 'error'
-        elif printer['state']['flags']['cancelling']:
-            record.state = 'cancel'
         else:
-            record.state = 'printing'
+            record.state = 'print'
+
+        def create_statistic(name, dict):
+            return {
+                'name': name,
+                'actual_temperature': dict.get('actual', 0.0),
+                'target_temperature': dict.get('target', 0.0),
+                'temperature_offset': dict.get('offset', 0.0),
+                'filament_length': dict.get('length', 0.0),
+                'filament_volume': dict.get('volume', 0.0),
+            }
+
+        statistics = {}
+        for key, value in printer['temperature'].items():
+            if not (key == 'bed' or key.startswith('tool')):
+                continue
+            statistics[key] = value
+        for key, value in job['job']['filament'].items():
+            statistics[key] = statistics.get(key, {}) | value
+        record.statistic_ids = [
+            Command.delete(statistic.id) for statistic in record.statistic_ids
+        ]
+        record.statistic_ids = [
+            Command.create(create_statistic(name, dict))
+            for name, dict in statistics.items()
+        ]
 
     def action_cancel(self):
         for record in self:
@@ -132,6 +162,10 @@ class OctoPrintPrint(models.Model):
         domain = [('state', '=', 'printing'), ('printer_id', '=', self.printer_id.id)]
         if len(self.env['octoprint.print'].search(domain)) > 0:
             raise UserError('Please wait for the current print to finish.')
+        if not (self.stl_file and self.slicer_id and self.printer_id):
+            raise UserError(
+                'Please upload an STL file and select a slicer and printer.'
+            )
 
         # Issue print command
         icp_sudo = self.env['ir.config_parameter'].sudo()

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<!-- Form View -->
+	<record id="octoprint_statistic_view_form" model="ir.ui.view">
+		<field name="name">octoprint.statistic.view.form</field>
+		<field name="model">octoprint.statistic</field>
+		<field name="arch" type="xml">
+			<form string="Statistic View">
+				<sheet>
+					<h1>
+						<field name="name" />
+					</h1>
+					<group>
+						<group string="Temperature Information">
+							<field name="actual_temperature" />
+							<field name="target_temperature" />
+							<field name="temperature_offset" />
+						</group>
+						<group string="Filament Information">
+							<field name="filament_length" />
+							<field name="filament_volume" />
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- List View -->
+	<record id="octoprint_statistic_view_list" model="ir.ui.view">
+		<field name="name">octoprint.statistic.view.list</field>
+		<field name="model">octoprint.statistic</field>
+		<field name="arch" type="xml">
+			<tree string="Statistic List">
+				<field name="name" />
+				<field name="actual_temperature" />
+				<field name="target_temperature" />
+				<field name="temperature_offset" />
+				<field name="filament_length" />
+				<field name="filament_volume" />
+			</tree>
+		</field>
+	</record>
+
+	<!-- Search View -->
+	<record id="octoprint_statistic_view_search" model="ir.ui.view">
+		<field name="name">octoprint.statistic.view.search</field>
+		<field name="model">octoprint.statistic</field>
+		<field name="arch" type="xml">
+			<search string="Statistic Search">
+				<field name="name" />
+				<field name="actual_temperature" />
+				<field name="target_temperature" />
+				<field name="temperature_offset" />
+				<field name="filament_length" />
+				<field name="filament_volume" />
+			</search>
+		</field>
+	</record>
+
+</odoo>

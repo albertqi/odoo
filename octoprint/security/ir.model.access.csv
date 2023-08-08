@@ -5,9 +5,11 @@ octoprint_print_admin,octoprint print admin,model_octoprint_print,base.group_sys
 octoprint_print_user,octoprint print user,model_octoprint_print,base.group_user,1,0,1,0
 octoprint_printer_admin,octoprint printer admin,model_octoprint_printer,base.group_system,1,1,1,1
 octoprint_printer_user,octoprint printer user,model_octoprint_printer,base.group_user,1,0,1,0
-octoprint_slicer_admin,octoprint slicer admin,model_octoprint_slicer,base.group_system,1,1,1,1
-octoprint_slicer_user,octoprint slicer user,model_octoprint_slicer,base.group_user,1,0,1,0
 octoprint_slicer_extruder_admin,octoprint slicer extruder admin,model_octoprint_slicer_extruder,base.group_system,1,1,1,1
 octoprint_slicer_extruder_user,octoprint slicer extruder user,model_octoprint_slicer_extruder,base.group_user,1,0,1,0
+octoprint_slicer_admin,octoprint slicer admin,model_octoprint_slicer,base.group_system,1,1,1,1
+octoprint_slicer_user,octoprint slicer user,model_octoprint_slicer,base.group_user,1,0,1,0
+octoprint_statistic_admin,octoprint statistic admin,model_octoprint_statistic,base.group_system,1,1,1,1
+octoprint_statistic_user,octoprint statistic user,model_octoprint_statistic,base.group_user,1,0,1,0
 mrp_production_wizard_admin,mrp production wizard admin,model_mrp_production_wizard,base.group_system,1,1,1,1
 mrp_production_wizard_user,mrp production wizard user,model_mrp_production_wizard,base.group_user,1,0,1,0

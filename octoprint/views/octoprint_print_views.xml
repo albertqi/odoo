@@ -32,6 +32,8 @@
 							<field name="current_print_time" />
 							<field name="remaining_print_time" />
 						</group>
+						<separator string="Print Statistics" />
+						<field name="statistic_ids" />
 					</group>
 				</sheet>
 			</form>
