@@ -1,42 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<record id="octoprint_slicer_view_form" model="ir.ui.view">
-		<field name="name">octoprint.slicer.view.form</field>
-		<field name="model">octoprint.slicer</field>
-		<field name="arch" type="xml">
-			<form string="Slicer View">
-				<sheet>
-					<h1>
-						<field name="name" />
-					</h1>
-					<group>
-						<group string="Slicer Information">
-							<field name="slicer_id" />
-							<field name="infill" />
-							<field name="fill_density" />
-							<field name="layer_height" />
-							<field name="skirt_line_count" />
+    <record id="octoprint_slicer_view_form" model="ir.ui.view">
+        <field name="name">octoprint.slicer.view.form</field>
+        <field name="model">octoprint.slicer</field>
+        <field name="arch" type="xml">
+            <form string="Slicer View">
+                <sheet>
+                    <h1>
+                        <field name="name" />
+                    </h1>
+                    <group>
+                        <group string="Slicer Information">
+                            <field name="slicer_id" />
+                            <field name="printer_id" />
 							<field name="default" />
-						</group>
-					</group>
-					<notebook>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Basic Info">
+                            <group>
+                                <group>
+                                    <separator string="Quality" />
+									<group>
+										<field name="layer_height" />
+										<field name="wall_thickness" />
+										<field name="retraction_enable" />
+									</group>
+                                    <group attrs="{'invisible': [('retraction_enable', '=', False)]}">
+                                        <field name="retraction_amount" />
+                                        <field name="retraction_speed" />
+                                        <field name="retraction_dual_amount" />
+                                        <field name="retraction_min_travel" />
+                                        <field name="retraction_minimal_extrusion" />
+                                        <field name="retraction_hop"/>
+                                    </group>
+                                    <separator string="Fill"/>
+									<group>
+										<field name="solid_layer_thickness" />
+										<field name="fill_density" />
+									</group>
+                                    <separator string="Speed and Temperature" />
+									<group>
+										<field name="print_speed" />
+										<field name="print_bed_temperature" />
+										<field name="fan_speed" />
+										<field name="fan_speed_max" />
+										<field name="cool_min_feedrate" />
+									</group>
+                                    
+                                </group>
+                                <group>
+                                    <separator string="Support" />
+									<group>
+										<field name="support" />
+									</group>
+                                    <group attrs="{'invisible': [('support', '=', 'none')]}">
+                                        <field name="support_type" />
+                                        <field name="support_angle" />
+                                        <field name="support_fill_rate" />
+                                        <field name="support_xy_distance" />
+                                        <field name="support_z_distance" />
+                                    </group>
+									<separator string="Filament" />
+									<group>
+										<field name="print_temperature" />
+										<field name="extruder_filament_diameter" />
+									</group>
+									<separator string="Machine" />
+									<group>
+										<field name="nozzle_size" />
+									</group>
+                                </group>
+                            </group>
+                        </page>
+						<page string="Advanced">
+							<group>
+								<group>
+									<separator string="Spiralization" />
+									<group>
+										<field name="spiralization" />
+									</group>
+									<separator string="Platform Adhesion"/>
+									<group>
+										<group>
+											<field name="platform_adhesion" />			
+										</group>
+										<group attrs="{'invisible': [('platform_adhesion', '!=', 'raft')]}">
+											<field name="raft_margin" />
+											<field name="raft_line_spacing" />
+											<field name="raft_base_thickness" />
+											<field name="raft_base_linewidth" />
+											<field name="raft_interface_thickness" />
+											<field name="raft_interface_linewidth" />
+											<field name="raft_airgap" />
+											<field name="raft_surface_layers" />
+											<field name="raft_surface_thickness" />
+											<field name="raft_surface_linewidth" />
+										</group>
+									</group>
+									<separator string="Skirt" />
+									<group>
+										<field name="skirt_line_count" />
+										<field name="skirt_gap" />
+										<field name="skirt_minimal_length" />
+									</group>
+								</group>
+								<group>
+									<separator string="Wipe Tower"/>
+									<group>
+										<group>
+											<field name="wipe_tower" />
+										</group>
+										<group attrs="{'invisible': [('wipe_tower', '=', 'False')]}">
+											<field name="wipe_tower_volume"/>
+											<field name="ooze_shield" />
+										</group>
+									</group>
+								</group>
+							</group>
+						</page>
 						<page string="Description">
 							<field name="description" />
 						</page>
-					</notebook>
-				</sheet>
-			</form>
-		</field>
-	</record>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 
-	<record id="octoprint_slicer_view_list" model="ir.ui.view">
-		<field name="name">octoprint.slicer.view.list</field>
-		<field name="model">octoprint.slicer</field>
-		<field name="arch" type="xml">
-			<tree string="Slicer List">
-				<field name="name" />
-			</tree>
-		</field>
-	</record>
+    <record id="octoprint_slicer_view_list" model="ir.ui.view">
+        <field name="name">octoprint.slicer.view.list</field>
+        <field name="model">octoprint.slicer</field>
+        <field name="arch" type="xml">
+            <tree string="Slicer List">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
 </odoo>
