@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 import requests
 import base64
 
+
 class OctoPrintPrint(models.Model):
     _name = 'octoprint.print'
     _description = 'OctoPrint Print'
@@ -54,7 +55,7 @@ class OctoPrintPrint(models.Model):
         self.ensure_one()
         icp_sudo = self.env['ir.config_parameter'].sudo()
         try:
-            file = base64.b64decode(self.stl_file)
+            file = base64.b64decode(self.with_context(bin_size=False).stl_file)
             response = requests.post(
                 f'{icp_sudo.get_param("octoprint.base_url")}/api/files/local',
                 params={
@@ -136,9 +137,7 @@ class OctoPrintPrint(models.Model):
             statistics[key] = value
         for key, value in job['job']['filament'].items():
             statistics[key] = statistics.get(key, {}) | value
-        record.statistic_ids = [
-            Command.delete(statistic.id) for statistic in record.statistic_ids
-        ]
+        record.statistic_ids = [Command.clear()]
         record.statistic_ids = [
             Command.create(create_statistic(name, dict))
             for name, dict in statistics.items()
