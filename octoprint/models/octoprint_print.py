@@ -2,8 +2,7 @@ from odoo import api, models, fields
 from odoo import Command
 from odoo.exceptions import UserError
 import requests
-import io
-
+import base64
 
 class OctoPrintPrint(models.Model):
     _name = 'octoprint.print'
@@ -55,22 +54,17 @@ class OctoPrintPrint(models.Model):
         self.ensure_one()
         icp_sudo = self.env['ir.config_parameter'].sudo()
         try:
-            file = io.BytesIO(self.stl_file)
-            file.name = (
-                f'{self.name}.stl'  # STL file will be named after the print name.
-            )
-            file.seek(0)
+            file = base64.b64decode(self.stl_file)
             response = requests.post(
                 f'{icp_sudo.get_param("octoprint.base_url")}/api/files/local',
                 params={
                     'apikey': icp_sudo.get_param('octoprint.api_key'),
                 },
-                files={
-                    'file': io.BufferedReader(file),
-                },
+                files={"file": (f'{self.name}.stl', file)},
             )
             response.raise_for_status()
-        except:
+        except Exception as e:
+            print(e)
             raise UserError(f"Bad Request: {response.json().get('error')}")
 
     def _compute_fields(self):
