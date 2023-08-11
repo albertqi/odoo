@@ -89,6 +89,9 @@ class OctoPrintSlicer(models.Model):
     cool_min_feedrate = fields.Integer(default=10,required=True)
     
 
+    # Parameters
+    start_gcode = fields.Text(required=True)
+    end_gcode = fields.Text(required=True)
     @api.model_create_multi
     def create(self, vals_list):
         res = super(OctoPrintSlicer, self).create(vals_list)
@@ -138,6 +141,7 @@ class OctoPrintSlicer(models.Model):
 
     def _parse_to_JSON(self):
         self.ensure_one()
+        print(self.print_temperature)
         return {
             "displayName": self.name,
             "description": self.description,
@@ -150,6 +154,12 @@ class OctoPrintSlicer(models.Model):
                 "fill_density": self.fill_density,
 
                 "print_speed": self.print_speed,
+                "print_temperature":[
+                    self.print_temperature,
+                    False,
+                    False,
+                    False
+                ],
                 "print_bed_temperature": self.print_bed_temperature,
 
                 "support": self.support,
@@ -194,6 +204,10 @@ class OctoPrintSlicer(models.Model):
                 "layer0_width_factor":self.layer0_width_factor,
                 "fan_speed": self.fan_speed,
                 "fan_speed_max": self.fan_speed_max,
-                "cool_min_feedrate": self.cool_min_feedrate
+                "cool_min_feedrate": self.cool_min_feedrate,
+
+                "start_gcode": [self.start_gcode],
+                "end_gcode" : [self.end_gcode],
+                
             },
         }

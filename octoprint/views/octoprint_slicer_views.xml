@@ -83,22 +83,23 @@
 									</group>
 									<separator string="Platform Adhesion"/>
 									<group>
-										<group>
-											<field name="platform_adhesion" />			
-										</group>
-										<group attrs="{'invisible': [('platform_adhesion', '!=', 'raft')]}">
-											<field name="raft_margin" />
-											<field name="raft_line_spacing" />
-											<field name="raft_base_thickness" />
-											<field name="raft_base_linewidth" />
-											<field name="raft_interface_thickness" />
-											<field name="raft_interface_linewidth" />
-											<field name="raft_airgap" />
-											<field name="raft_surface_layers" />
-											<field name="raft_surface_thickness" />
-											<field name="raft_surface_linewidth" />
-										</group>
+										<field name="platform_adhesion" />			
 									</group>
+									<separator string="Raft Settings" />
+									<group attrs="{'invisible': [('platform_adhesion', '!=', 'raft')]}">
+										
+										<field name="raft_margin" />
+										<field name="raft_line_spacing" />
+										<field name="raft_base_thickness" />
+										<field name="raft_base_linewidth" />
+										<field name="raft_interface_thickness" />
+										<field name="raft_interface_linewidth" />
+										<field name="raft_airgap" />
+										<field name="raft_surface_layers" />
+										<field name="raft_surface_thickness" />
+										<field name="raft_surface_linewidth" />
+									</group>
+									
 									<separator string="Skirt" />
 									<group>
 										<field name="skirt_line_count" />
@@ -108,20 +109,20 @@
 								</group>
 								<group>
 									<separator string="Wipe Tower"/>
-									<group>
-										<group>
-											<field name="wipe_tower" />
-										</group>
-										<group attrs="{'invisible': [('wipe_tower', '=', 'False')]}">
-											<field name="wipe_tower_volume"/>
-											<field name="ooze_shield" />
-										</group>
-									</group>
+									<field name="wipe_tower" />
+									<field name="wipe_tower_volume" attrs="{'invisible': [('wipe_tower', '=', 'False')]}" />
+									<field name="ooze_shield" attrs="{'invisible': [('wipe_tower', '=', 'False')]}" />
 								</group>
 							</group>
 						</page>
 						<page string="Description">
 							<field name="description" />
+						</page>
+						<page string="Start G-Code">
+							<field name="start_gcode" />
+						</page>
+						<page string="End G-Code">
+							<field name="end_gcode" />
 						</page>
                     </notebook>
                 </sheet>
