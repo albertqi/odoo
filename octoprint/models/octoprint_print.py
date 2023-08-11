@@ -107,13 +107,16 @@ class OctoPrintPrint(models.Model):
             return
 
         record.is_current_job = True
-        record.completion = job['progress']['completion'] / 100.0
+        if not job['progress']['completion']:
+            record.completion = 0.0
+        else:
+            record.completion = job['progress']['completion'] / 100.0
         record.current_print_time = job['progress']['printTime']
         record.remaining_print_time = job['progress']['printTimeLeft']
 
         if record.state == 'cancel':
             pass
-        elif job['progress']['completion'] >= 100.0:
+        elif record.completion >= 1.0:
             record.state = 'done'
         elif printer['state']['flags']['error']:
             record.state = 'error'
